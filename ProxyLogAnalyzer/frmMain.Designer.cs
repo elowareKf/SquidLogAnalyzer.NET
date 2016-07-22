@@ -35,18 +35,18 @@
             this.auswertenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.nachIPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.nachDomäneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.unterkategorieToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.zeitAuswertenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.verweigerteZugriffeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.listboxExportierenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsmi_MostClickList = new System.Windows.Forms.ToolStripMenuItem();
             this.datenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.doppelteUrlEinträgeLöschenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.lbHighHirarchy = new System.Windows.Forms.ListBox();
             this.dgvAnalyze = new System.Windows.Forms.DataGridView();
-            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
-            this.tsmi_MostClickList = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiClickmaster = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiImportWoFilter = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -73,7 +73,8 @@
             // 
             this.dateiToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.importToolStripMenuItem,
-            this.importHeutigerDatensätzeToolStripMenuItem});
+            this.importHeutigerDatensätzeToolStripMenuItem,
+            this.tsmiImportWoFilter});
             this.dateiToolStripMenuItem.Name = "dateiToolStripMenuItem";
             this.dateiToolStripMenuItem.Size = new System.Drawing.Size(65, 29);
             this.dateiToolStripMenuItem.Text = "Datei";
@@ -91,19 +92,19 @@
             this.importHeutigerDatensätzeToolStripMenuItem.Name = "importHeutigerDatensätzeToolStripMenuItem";
             this.importHeutigerDatensätzeToolStripMenuItem.Size = new System.Drawing.Size(332, 30);
             this.importHeutigerDatensätzeToolStripMenuItem.Text = "Import freie Datumswahl...";
-            this.importHeutigerDatensätzeToolStripMenuItem.Click += new System.EventHandler(this.importHeutigerDatensätzeToolStripMenuItem_Click);
+            this.importHeutigerDatensätzeToolStripMenuItem.Click += new System.EventHandler(this.importToolStripMenuItem_Click);
             // 
             // auswertenToolStripMenuItem
             // 
             this.auswertenToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.nachIPToolStripMenuItem,
             this.nachDomäneToolStripMenuItem,
-            this.unterkategorieToolStripMenuItem,
             this.toolStripMenuItem1,
             this.verweigerteZugriffeToolStripMenuItem,
             this.listboxExportierenToolStripMenuItem,
             this.toolStripMenuItem2,
-            this.tsmi_MostClickList});
+            this.tsmi_MostClickList,
+            this.tsmiClickmaster});
             this.auswertenToolStripMenuItem.Name = "auswertenToolStripMenuItem";
             this.auswertenToolStripMenuItem.Size = new System.Drawing.Size(107, 29);
             this.auswertenToolStripMenuItem.Text = "Auswerten";
@@ -121,21 +122,6 @@
             this.nachDomäneToolStripMenuItem.Size = new System.Drawing.Size(308, 30);
             this.nachDomäneToolStripMenuItem.Text = "Nach Domäne";
             this.nachDomäneToolStripMenuItem.Click += new System.EventHandler(this.nachDomäneToolStripMenuItem_Click);
-            // 
-            // unterkategorieToolStripMenuItem
-            // 
-            this.unterkategorieToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.zeitAuswertenToolStripMenuItem});
-            this.unterkategorieToolStripMenuItem.Name = "unterkategorieToolStripMenuItem";
-            this.unterkategorieToolStripMenuItem.Size = new System.Drawing.Size(308, 30);
-            this.unterkategorieToolStripMenuItem.Text = "Unterkategorie";
-            // 
-            // zeitAuswertenToolStripMenuItem
-            // 
-            this.zeitAuswertenToolStripMenuItem.Name = "zeitAuswertenToolStripMenuItem";
-            this.zeitAuswertenToolStripMenuItem.Size = new System.Drawing.Size(211, 30);
-            this.zeitAuswertenToolStripMenuItem.Text = "Zeit auswerten";
-            this.zeitAuswertenToolStripMenuItem.Click += new System.EventHandler(this.zeitAuswertenToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
@@ -155,6 +141,18 @@
             this.listboxExportierenToolStripMenuItem.Size = new System.Drawing.Size(308, 30);
             this.listboxExportierenToolStripMenuItem.Text = "Listbox exportieren...";
             this.listboxExportierenToolStripMenuItem.Click += new System.EventHandler(this.listboxExportierenToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(305, 6);
+            // 
+            // tsmi_MostClickList
+            // 
+            this.tsmi_MostClickList.Name = "tsmi_MostClickList";
+            this.tsmi_MostClickList.Size = new System.Drawing.Size(308, 30);
+            this.tsmi_MostClickList.Text = "Webseiten Hitliste erstellen";
+            this.tsmi_MostClickList.Click += new System.EventHandler(this.tsmi_MostClickList_Click);
             // 
             // datenToolStripMenuItem
             // 
@@ -216,17 +214,19 @@
             this.dgvAnalyze.Size = new System.Drawing.Size(996, 768);
             this.dgvAnalyze.TabIndex = 1;
             // 
-            // toolStripMenuItem2
+            // tsmiClickmaster
             // 
-            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(305, 6);
+            this.tsmiClickmaster.Name = "tsmiClickmaster";
+            this.tsmiClickmaster.Size = new System.Drawing.Size(308, 30);
+            this.tsmiClickmaster.Text = "Clickmaster ermitteln";
+            this.tsmiClickmaster.Click += new System.EventHandler(this.tsmiClickmaster_Click);
             // 
-            // tsmi_MostClickList
+            // tsmiImportWoFilter
             // 
-            this.tsmi_MostClickList.Name = "tsmi_MostClickList";
-            this.tsmi_MostClickList.Size = new System.Drawing.Size(308, 30);
-            this.tsmi_MostClickList.Text = "Webseiten Hitliste erstellen";
-            this.tsmi_MostClickList.Click += new System.EventHandler(this.tsmi_MostClickList_Click);
+            this.tsmiImportWoFilter.Name = "tsmiImportWoFilter";
+            this.tsmiImportWoFilter.Size = new System.Drawing.Size(332, 30);
+            this.tsmiImportWoFilter.Text = "Import ohne Filter...";
+            this.tsmiImportWoFilter.Click += new System.EventHandler(this.importToolStripMenuItem_Click);
             // 
             // frmMain
             // 
@@ -263,8 +263,6 @@
         private System.Windows.Forms.ToolStripMenuItem nachIPToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem nachDomäneToolStripMenuItem;
         private System.Windows.Forms.DataGridView dgvAnalyze;
-        private System.Windows.Forms.ToolStripMenuItem unterkategorieToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem zeitAuswertenToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem verweigerteZugriffeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importHeutigerDatensätzeToolStripMenuItem;
@@ -273,6 +271,8 @@
         private System.Windows.Forms.ToolStripMenuItem listboxExportierenToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem tsmi_MostClickList;
+        private System.Windows.Forms.ToolStripMenuItem tsmiClickmaster;
+        private System.Windows.Forms.ToolStripMenuItem tsmiImportWoFilter;
     }
 }
 

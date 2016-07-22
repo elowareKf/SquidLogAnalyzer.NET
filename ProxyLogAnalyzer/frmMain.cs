@@ -19,6 +19,7 @@ namespace ProxyLogReader {
             Domain,
             TcpDenied
         }
+        System.Threading.Thread GetHostNamesClickMaster;
 
         KindOfAnalyze kindOfAnalyze = KindOfAnalyze.No;
 
@@ -35,28 +36,22 @@ namespace ProxyLogReader {
             ofd.Dispose();
             auswertenToolStripMenuItem.Enabled = false;
 
-            if (filename != "")
-                await Task.Run(() => { OpenFile(filename, DateTime.Now.AddDays(-1)); });
-        }
+            if (filename != "") {
+                if (sender == importToolStripMenuItem)
+                    await Task.Run(() => { OpenFile(filename, DateTime.Now.AddDays(-1)); });
+                else if (sender == importHeutigerDatensätzeToolStripMenuItem)
+                    await Task.Run(() => { OpenFile(filename, DateTime.Now); });
+                else if (sender == tsmiImportWoFilter)
+                    await Task.Run(() => { OpenFile(filename, null); });
 
-        private async void importHeutigerDatensätzeToolStripMenuItem_Click(object sender, EventArgs e) {
-            string filename;
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.ShowDialog();
-            filename = ofd.FileName;
-            ofd.Dispose();
-
-            auswertenToolStripMenuItem.Enabled = false;
-
-            if (filename != "")
-                await Task.Run(() => { OpenFile(filename, DateTime.Now); });
+            }
         }
 
         /// <summary>
         /// Opens a Proxy log file and reads the information into a requestcollection
         /// </summary>
         /// <param name="filename"></param>
-        private void OpenFile(string filename, DateTime filter) {
+        private void OpenFile(string filename, DateTime? filter) {
             FileInfo file = new FileInfo(filename);
             FileStream stream = file.OpenRead();
 
@@ -72,8 +67,9 @@ namespace ProxyLogReader {
                 DateTime x = new DateTime(1970, 1, 1, 0, 0, 0);
                 LinuxDate = items[0];
 
-                if (!LinuxDate.StartsWith(filter.ToString("dd'/'MMM'/'yyyy")))
-                    continue;
+                if (filter != null)
+                    if (!LinuxDate.StartsWith(((DateTime)filter).ToString("dd'/'MMM'/'yyyy")))
+                        continue;
 
                 ProxyLogEntry entry = new ProxyLogEntry();
                 entry.TimeStamp = LinuxDate;
@@ -320,6 +316,9 @@ namespace ProxyLogReader {
 
 
         private void tsmi_MostClickList_Click(object sender, EventArgs e) {
+            if (GetHostNamesClickMaster.ThreadState == System.Threading.ThreadState.Running)
+                GetHostNamesClickMaster.Abort();
+
             List<ChartEntry> charts = new List<ChartEntry>();
             foreach (var log in proxyLogs) {
                 if (charts.Find(x => x.Website == log.Domain) == null)
@@ -340,5 +339,51 @@ namespace ProxyLogReader {
                 dgvAnalyze.Rows.Add(row);
             }
         }
+
+
+        private class ClickMaster {
+            public IPAddress IpAddress { get; set; }
+            public string Name { get; set; }
+            public int Clicks { get; set; }
+            public override string ToString() => $"{IpAddress} - {Name}: {Clicks}";
+        }
+
+        private void tsmiClickmaster_Click(object sender, EventArgs e) {
+            List<ClickMaster> charts = new List<ClickMaster>();
+            foreach (var log in proxyLogs) {
+                if (charts.Find(x => x.IpAddress.ToString() == log.Client.IpAddress.ToString()) == null)
+                    charts.Add(new ClickMaster() { IpAddress = log.Client.IpAddress, Clicks = 1 });
+                else
+                    charts.Find(x => x.IpAddress.ToString() == log.Client.IpAddress.ToString()).Clicks++;
+            }
+
+            dgvAnalyze.Rows.Clear();
+            dgvAnalyze.Columns.Clear();
+            dgvAnalyze.Columns.Add("IP", "IP Adresse");
+            dgvAnalyze.Columns.Add("NetName", "PC Name");
+            dgvAnalyze.Columns.Add("Clicks", "Clicks");
+
+            foreach (var hit in charts) {
+                DataGridViewRow row = new DataGridViewRow();
+                row.CreateCells(dgvAnalyze);
+                row.Cells[0].Value = hit.IpAddress;
+                row.Cells[2].Value = hit.Clicks;
+                dgvAnalyze.Rows.Add(row);
+            }
+
+            GetHostNamesClickMaster = new System.Threading.Thread(() => {
+            foreach (DataGridViewRow row in dgvAnalyze.Rows) {
+                string ipAddress = ((IPAddress)row.Cells[0].Value).ToString();
+                string name = GetMachineNameFromIPAddress(ipAddress);
+
+                BeginInvoke((EmptyDelegate)(() => {
+                    row.Cells[1].Value = name;
+                }));
+                }
+            });
+            GetHostNamesClickMaster.Start();
+        }
+
+        delegate void StringParamDelegate(string param, DataGridViewRow row);
     }
 }
